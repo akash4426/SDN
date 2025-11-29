@@ -10,7 +10,7 @@ A complete **Self-Healing SDN System** that uses
 🧠 **Machine Learning (XGBoost)** for DDoS attack detection and  
 🤖 **Reinforcement Learning (PPO)** for autonomous mitigation decisions.
 
-Built as part of **20CYS303 – Computer Networks Lab**, this project demonstrates an intelligent SDN controller that automatically detects attacks and chooses the best mitigation action.
+Built as part of **20CYS303 – Computer Networks**, this project demonstrates an intelligent SDN controller that automatically detects attacks and chooses the best mitigation action.
 
 ---
 
@@ -180,17 +180,11 @@ This project introduces **a hybrid SDN security framework**:
 3. Commit your changes  
 4. Submit a PR  
 
----
-
-## 📜 License
-
-Licensed under the MIT License — see `LICENSE` for details.
 
 ---
 
 ## ✍️ Authors
-- **Akash Reddy** — Project Author  
-- 20CYS303 – Computer Networks Lab  
+- **Akash Karri** — Project Author  
 
 ---
 
