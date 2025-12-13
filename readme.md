@@ -1,7 +1,6 @@
 # 🛡️ SDN – Self-Healing Software Defined Network (ML + RL)
 
 [![Repository](https://img.shields.io/badge/repo-akash4426/SDN-blue.svg)](https://github.com/akash4426/SDN)
-[![License](https://img.shields.io/github/license/akash4426/SDN)](https://github.com/akash4426/SDN/blob/main/LICENSE)
 [![Issues](https://img.shields.io/github/issues-raw/akash4426/SDN)](https://github.com/akash4426/SDN/issues)
 [![Top Language](https://img.shields.io/github/languages/top/akash4426/SDN)](https://github.com/akash4426/SDN)
 [![Lines of Code](https://img.shields.io/tokei/lines/github/akash4426/SDN)](https://github.com/akash4426/SDN)
