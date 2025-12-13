@@ -3,7 +3,6 @@
 [![Repository](https://img.shields.io/badge/repo-akash4426/SDN-blue.svg)](https://github.com/akash4426/SDN)
 [![Issues](https://img.shields.io/github/issues-raw/akash4426/SDN)](https://github.com/akash4426/SDN/issues)
 [![Top Language](https://img.shields.io/github/languages/top/akash4426/SDN)](https://github.com/akash4426/SDN)
-[![Lines of Code](https://img.shields.io/tokei/lines/github/akash4426/SDN)](https://github.com/akash4426/SDN)
 
 A complete **Self-Healing SDN System** that uses  
 🧠 **Machine Learning (XGBoost)** for DDoS attack detection and  
