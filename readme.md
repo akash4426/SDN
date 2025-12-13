@@ -188,5 +188,5 @@ This project introduces **a hybrid SDN security framework**:
 
 ## 📧 Contact
 For queries:  
-**akash4426@users.noreply.github.com**
+**akashkarri2006@gmail.com**
 
