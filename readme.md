@@ -15,8 +15,6 @@
 
 **An intelligent, autonomous SDN controller that detects DDoS attacks in real-time using XGBoost and responds with optimal mitigation strategies using PPO Reinforcement Learning.**
 
-*Built for 20CYS303 – Computer Networks | Amrita Vishwa Vidyapeetham*
-
 </div>
 
 ---
@@ -70,13 +68,14 @@ Network Flow → XGBoost Detector → Attack Probability → Hybrid Decision →
 
 **Software Defined Networking (SDN)** is a modern networking paradigm that **separates the control plane from the data plane**:
 
-| Plane | Traditional Network | SDN |
-|---|---|---|
-| **Control Plane** | Embedded in each switch/router | Centralized in a software controller |
-| **Data Plane** | Hardware-driven packet forwarding | Programmable via OpenFlow rules |
-| **Management** | Device-by-device CLI config | Single API-driven controller |
+| Plane             | Traditional Network               | SDN                                  |
+| ----------------- | --------------------------------- | ------------------------------------ |
+| **Control Plane** | Embedded in each switch/router    | Centralized in a software controller |
+| **Data Plane**    | Hardware-driven packet forwarding | Programmable via OpenFlow rules      |
+| **Management**    | Device-by-device CLI config       | Single API-driven controller         |
 
 **Why SDN for security?**
+
 - The centralized controller has a **global view** of all network flows
 - It can push new **flow rules** to switches in milliseconds
 - This makes it ideal for rapid, automated DDoS mitigation
@@ -91,15 +90,15 @@ In this project, the SDN controller is **simulated** using real flow-level metri
 
 This project handles **7 types of DDoS attacks** from the dataset:
 
-| Attack Type | Description |
-|---|---|
+| Attack Type   | Description                                                                        |
+| ------------- | ---------------------------------------------------------------------------------- |
 | **SYN Flood** | Exploits TCP handshake by sending massive SYN packets, exhausting server resources |
-| **UDP Flood** | Sends huge volumes of UDP datagrams to random ports, overwhelming the target |
-| **UDPLag** | UDP-based attack crafted to maximize latency and jitter |
-| **MSSQL** | Targets Microsoft SQL Server with amplified UDP reflection traffic |
-| **NetBIOS** | Exploits Windows NetBIOS name resolution for reflection/amplification |
-| **LDAP** | Amplification attack using LDAP servers for traffic reflection |
-| **Portmap** | Uses Sun RPC portmap protocol for amplified UDP reflection |
+| **UDP Flood** | Sends huge volumes of UDP datagrams to random ports, overwhelming the target       |
+| **UDPLag**    | UDP-based attack crafted to maximize latency and jitter                            |
+| **MSSQL**     | Targets Microsoft SQL Server with amplified UDP reflection traffic                 |
+| **NetBIOS**   | Exploits Windows NetBIOS name resolution for reflection/amplification              |
+| **LDAP**      | Amplification attack using LDAP servers for traffic reflection                     |
+| **Portmap**   | Uses Sun RPC portmap protocol for amplified UDP reflection                         |
 
 Each attack type creates a distinct **traffic fingerprint** in flow-level statistics, which the XGBoost model learns to identify.
 
@@ -110,12 +109,13 @@ Each attack type creates a distinct **traffic fingerprint** in flow-level statis
 **XGBoost (Extreme Gradient Boosting)** is an ensemble machine learning algorithm based on decision trees.
 
 #### How it works here:
+
 1. **Input Features** — The model is trained on flow-level statistics:
    - `FLOW PACKETS/S` — Number of packets per second
    - `FLOW BYTES/S` — Total bytes per second
    - `FWD HEADER LENGTH` — TCP/IP header size in the forward direction
    - `BWD HEADER LENGTH` — TCP/IP header size in the backward direction
-   - *(plus many more features from the CIC dataset)*
+   - _(plus many more features from the CIC dataset)_
 
 2. **Binary Classification** — Outputs a probability score:
    - `prob ≥ 0.5` → **Attack**
@@ -139,22 +139,23 @@ Flow Features → StandardScaler → XGBoost → P(Attack) ∈ [0.0, 1.0]
 
 #### RL Environment Design
 
-| Component | Value |
-|---|---|
-| **State Space** | `[attack_prob, pkt_norm, byte_norm, fwd_norm, bwd_norm]` — 5D continuous |
-| **Action Space** | Discrete: 4 possible actions |
-| **Reward** | High for correct blocking, penalized for false blocks of benign traffic |
+| Component        | Value                                                                    |
+| ---------------- | ------------------------------------------------------------------------ |
+| **State Space**  | `[attack_prob, pkt_norm, byte_norm, fwd_norm, bwd_norm]` — 5D continuous |
+| **Action Space** | Discrete: 4 possible actions                                             |
+| **Reward**       | High for correct blocking, penalized for false blocks of benign traffic  |
 
 #### Action Space
 
-| Action ID | Mitigation Action | When Applied |
-|---|---|---|
-| `0` | **No Action** | Low probability, benign-looking traffic |
-| `1` | **Block Source IP** | High-confidence, high-intensity attack |
-| `2` | **Rate Limit** | Moderate attack, or uncertain high-volume traffic |
-| `3` | **Redirect to Honeypot** | Suspicious traffic for forensic analysis |
+| Action ID | Mitigation Action        | When Applied                                      |
+| --------- | ------------------------ | ------------------------------------------------- |
+| `0`       | **No Action**            | Low probability, benign-looking traffic           |
+| `1`       | **Block Source IP**      | High-confidence, high-intensity attack            |
+| `2`       | **Rate Limit**           | Moderate attack, or uncertain high-volume traffic |
+| `3`       | **Redirect to Honeypot** | Suspicious traffic for forensic analysis          |
 
 #### Why PPO?
+
 - Works well in **discrete action spaces** like network policy decisions
 - More stable than vanilla policy gradient (prevents large policy updates via clipping)
 - Naturally learns the trade-off between **false positives** (blocking legitimate users) and **false negatives** (missing attacks)
@@ -175,6 +176,7 @@ else:
 ```
 
 This design ensures:
+
 - **Deterministic blocking** for extreme-confidence attacks (no RL latency needed)
 - **RL reasoning** for borderline cases where nuanced decisions matter
 - **Safety** — benign flows are never blocked by ML-only overconfidence
@@ -231,18 +233,18 @@ The **Canadian Institute for Cybersecurity DDoS 2019 (CIC-DDoS2019)** dataset is
 
 ### Dataset Files Used
 
-| File | Purpose | Attack Type |
-|---|---|---|
-| `MSSQL-training.parquet` | Training | MSSQL Amplification |
-| `UDPLag-training.parquet` | Training | UDP Lag Attack |
-| `Portmap-training.parquet` | Training | Portmap Reflection |
-| `UDP-training.parquet` | Training | UDP Flood |
-| `Syn-training.parquet` | Training | SYN Flood |
+| File                       | Purpose  | Attack Type           |
+| -------------------------- | -------- | --------------------- |
+| `MSSQL-training.parquet`   | Training | MSSQL Amplification   |
+| `UDPLag-training.parquet`  | Training | UDP Lag Attack        |
+| `Portmap-training.parquet` | Training | Portmap Reflection    |
+| `UDP-training.parquet`     | Training | UDP Flood             |
+| `Syn-training.parquet`     | Training | SYN Flood             |
 | `NetBIOS-training.parquet` | Training | NetBIOS Amplification |
-| `LDAP-training.parquet` | Training | LDAP Amplification |
-| `DNS-testing.parquet` | Testing | DNS Amplification |
-| `SNMP-testing.parquet` | Testing | SNMP Reflection |
-| `(+ more testing sets)` | Testing | All attack types |
+| `LDAP-training.parquet`    | Training | LDAP Amplification    |
+| `DNS-testing.parquet`      | Testing  | DNS Amplification     |
+| `SNMP-testing.parquet`     | Testing  | SNMP Reflection       |
+| `(+ more testing sets)`    | Testing  | All attack types      |
 
 > **Format:** Parquet (columnar storage — fast loading for large datasets)  
 > **Size:** ~51 MB training CSV, ~7+ GB raw Parquet files  
@@ -266,18 +268,18 @@ The **Canadian Institute for Cybersecurity DDoS 2019 (CIC-DDoS2019)** dataset is
 
 ## 🛠 Tech Stack
 
-| Category | Technology | Version |
-|---|---|---|
-| **Language** | Python | 3.11 |
-| **ML Framework** | XGBoost | 1.7.6 |
-| **RL Framework** | Stable-Baselines3 | 2.3.0 |
-| **RL Environment** | Gymnasium | 0.29.1 |
-| **UI / Dashboard** | Streamlit | Latest |
-| **Data Processing** | Pandas, NumPy | Latest |
-| **Visualization** | Matplotlib, Seaborn | Latest |
-| **Model Serialization** | Joblib, CloudPickle | 2.2.1 |
-| **Parquet I/O** | PyArrow | Latest |
-| **Dataset** | CIC-DDoS2019 | — |
+| Category                | Technology          | Version |
+| ----------------------- | ------------------- | ------- |
+| **Language**            | Python              | 3.11    |
+| **ML Framework**        | XGBoost             | 1.7.6   |
+| **RL Framework**        | Stable-Baselines3   | 2.3.0   |
+| **RL Environment**      | Gymnasium           | 0.29.1  |
+| **UI / Dashboard**      | Streamlit           | Latest  |
+| **Data Processing**     | Pandas, NumPy       | Latest  |
+| **Visualization**       | Matplotlib, Seaborn | Latest  |
+| **Model Serialization** | Joblib, CloudPickle | 2.2.1   |
+| **Parquet I/O**         | PyArrow             | Latest  |
+| **Dataset**             | CIC-DDoS2019        | —       |
 
 ---
 
@@ -382,17 +384,21 @@ The app will classify it and recommend a mitigation strategy.
 Two ready-made test CSVs are included for quick verification:
 
 ### `test_attack.csv` — Simulated DDoS Attack
+
 ```csv
 FLOW PACKETS/S,FLOW BYTES/S,FWD HEADER LENGTH,BWD HEADER LENGTH
 12000,850000,32,12
 ```
+
 > High packet rate + massive byte volume → Expected: **Block Source**
 
 ### `test_benign.csv` — Simulated Normal Traffic
+
 ```csv
 FLOW PACKETS/S,FLOW BYTES/S,FWD HEADER LENGTH,BWD HEADER LENGTH
 140,22000,80,75
 ```
+
 > Low packet rate + normal byte volume → Expected: **No Action**
 
 ---
@@ -401,12 +407,12 @@ FLOW PACKETS/S,FLOW BYTES/S,FWD HEADER LENGTH,BWD HEADER LENGTH
 
 ### 🔹 ML Detector Performance
 
-| Metric | Value |
-|---|---|
-| **Accuracy** | ~99.2% |
-| **AUC-ROC** | ~0.99 |
-| **False Positive Rate** | Very Low |
-| **Inference Speed** | < 1 ms per flow |
+| Metric                  | Value           |
+| ----------------------- | --------------- |
+| **Accuracy**            | ~99.2%          |
+| **AUC-ROC**             | ~0.99           |
+| **False Positive Rate** | Very Low        |
+| **Inference Speed**     | < 1 ms per flow |
 
 The XGBoost model achieves near-perfect separation between attack and benign flows due to the strongly distinct flow statistics of DDoS traffic.
 
@@ -414,12 +420,12 @@ The XGBoost model achieves near-perfect separation between attack and benign flo
 
 The PPO agent learns to:
 
-| Scenario | Learned Behavior |
-|---|---|
+| Scenario                     | Learned Behavior            |
+| ---------------------------- | --------------------------- |
 | Very high probability attack | Block Source IP immediately |
-| Moderate attack confidence | Apply Rate Limiting |
-| Low confidence / benign | Take No Action |
-| Suspicious but uncertain | Redirect to Honeypot |
+| Moderate attack confidence   | Apply Rate Limiting         |
+| Low confidence / benign      | Take No Action              |
+| Suspicious but uncertain     | Redirect to Honeypot        |
 
 - Achieves **high cumulative reward** over training episodes
 - Avoids penalized false positives (blocking legitimate users)
@@ -437,13 +443,13 @@ The PPO agent learns to:
 
 This project addresses a critical gap in existing SDN security research:
 
-| Existing Approaches | This Project |
-|---|---|
-| Detect attacks only (no mitigation) | ✅ Detects **AND** mitigates |
-| Static rule-based mitigation | ✅ **Adaptive RL policy** |
-| Single attack type focus | ✅ **7 multi-vector** DDoS types |
-| Human-in-the-loop required | ✅ **Fully autonomous** |
-| Lab-only simulations | ✅ **Real CIC-DDoS2019 flows** |
+| Existing Approaches                 | This Project                     |
+| ----------------------------------- | -------------------------------- |
+| Detect attacks only (no mitigation) | ✅ Detects **AND** mitigates     |
+| Static rule-based mitigation        | ✅ **Adaptive RL policy**        |
+| Single attack type focus            | ✅ **7 multi-vector** DDoS types |
+| Human-in-the-loop required          | ✅ **Fully autonomous**          |
+| Lab-only simulations                | ✅ **Real CIC-DDoS2019 flows**   |
 
 The **Hybrid Decision Fusion** layer is an original contribution — using ML confidence thresholds as a fast-path for extreme cases, while delegating nuanced decisions to the RL agent. This mimics how a real SDN controller would balance **speed** vs **intelligence** in production.
 
@@ -487,8 +493,8 @@ Please follow [Conventional Commits](https://www.conventionalcommits.org/) for c
 
 ## ✍️ Authors
 
-| Name | Role |
-|---|---|
+| Name            | Role                                                                          |
+| --------------- | ----------------------------------------------------------------------------- |
 | **Akash Karri** | Project Author — ML model, RL agent, Streamlit dashboard, architecture design |
 
 ---
@@ -512,6 +518,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ⭐ **If this project helped you, please give it a star!** ⭐
 
-*Made with ❤️ for the advancement of autonomous network security*
+_Made with ❤️ for the advancement of autonomous network security_
 
 </div>
